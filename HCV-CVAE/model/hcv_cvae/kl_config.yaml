@@ -1,0 +1,71 @@
+# KL Annealing Configuration
+# Choose your preferred strategy and parameters
+
+# Available strategies:
+# - linear: Linear increase from 0 to max_weight over anneal_epochs
+# - cyclical: Cyclical annealing with ramp up/down pattern
+# - cosine: Cosine annealing schedule
+# - adaptive: Adaptive based on KL divergence values
+# - beta: Beta-VAE style annealing with warmup
+
+strategy: "conservative"  # 使用最保守的安全策略
+
+# Strategy-specific parameters
+linear:
+  anneal_epochs: 100  # 更慢的退火
+  max_weight: 0.001   # 更小的最大权重
+
+# 安全策略配置
+conservative:
+  strategy: "safe_linear"
+  max_weight: 0.0005
+  anneal_epochs: 150
+  min_weight: 1e-7
+
+moderate:
+  strategy: "linear"
+  max_weight: 0.001
+  anneal_epochs: 100
+  min_weight: 1e-6
+
+adaptive:
+  strategy: "adaptive"
+  max_weight: 0.002
+  anneal_epochs: 80
+  min_weight: 1e-6
+  kl_target_min: 0.5
+  kl_target_max: 5.0
+
+cyclical:
+  cycle_length: 20
+  max_weight: 0.01
+
+cosine:
+  anneal_epochs: 50
+  max_weight: 0.01
+
+adaptive:
+  base_weight: 0.01
+  min_weight: 0.001
+  max_weight: 0.1
+  kl_target_min: 10
+  kl_target_max: 100
+
+beta:
+  warmup_epochs: 20
+  max_weight: 0.01
+  beta_schedule: "linear"  # or "cosine"
+
+# Advanced options
+advanced:
+  # Enable logging of KL statistics
+  log_kl_stats: true
+  
+  # Save KL weight history
+  save_kl_history: true
+  
+  # Early stopping based on KL divergence
+  early_stopping:
+    enabled: false
+    patience: 10
+    min_kl_threshold: 5.0
